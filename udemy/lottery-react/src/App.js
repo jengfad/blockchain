@@ -13,17 +13,8 @@ class App extends Component {
   async componentDidMount() {
     const isEthEnabled = await Web3Utils.isEthEnabled();
     if (isEthEnabled) {
-      const network = await web3.eth.net.getNetworkType();
-      console.log('network', network)
-      const accounts = await web3.eth.getAccounts();
-      console.log('accounts 0', accounts[0])
-
-      lottery.methods.manager().call((data) => {
-        console.log('callback', data);
-      });
-      
-      // console.log('manager', manager)
-      // this.setState({manager});
+      const manager = await lottery.methods.manager().call();
+      this.setState({manager});
     }
   }
 
