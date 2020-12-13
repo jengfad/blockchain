@@ -1,6 +1,6 @@
 import web3 from './web3';
 
-const lotteryAddress = '0xD0983b07985aBc04B3663523939954C162ba48fd';
+const lotteryAddress = '0xEAe320Cc04c2d26B978Be219fd2F8c5EC3ea84f4';
 const lotteryAbi = [
 	{
 		"inputs": [],
