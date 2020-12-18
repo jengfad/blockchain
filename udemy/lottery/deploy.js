@@ -3,7 +3,7 @@ const Web3 = require('web3');
 const { interface, bytecode } = require('./compile'); 
 
 const provider = new HDWalletProvider(
-    'method vibrant dignity simple joy glory clap motion ritual exhibit six decrease',
+    'round despair craft dawn process scrap such actor turtle jump cute mammal',
     'https://rinkeby.infura.io/v3/b93d312a577f4dc7a92ebdb2478c3fbb'
 );
 

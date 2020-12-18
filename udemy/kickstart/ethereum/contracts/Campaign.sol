@@ -1,4 +1,18 @@
-pragma solidity ^0.7.1;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.0;
+
+contract CampaignFactory {
+    Campaign[] public deployedCampaigns;
+
+    function createCampaign(uint minimum) public payable {
+        Campaign newCampaign = new Campaign(minimum, msg.sender);
+        deployedCampaigns.push(newCampaign);
+    }
+
+    function getDeployedCampaigns() public view returns (Campaign[] memory) {
+        return deployedCampaigns;
+    }
+}
 
 contract Campaign {
     struct Request {
@@ -22,8 +36,8 @@ contract Campaign {
         _;
     }
 
-    constructor(uint256 minimum) {
-        manager = msg.sender;
+    constructor(uint256 minimum, address creator) {
+        manager = creator;
         minimumContribution = minimum;
     }
 
