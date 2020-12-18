@@ -26,7 +26,7 @@ contract Campaign {
     
     address public manager;
     uint256 public minimumContribution;
-    mapping(address => bool) approvers;
+    mapping(address => bool) public approvers;
     uint public approversCount;
     Request[] public requests;
     mapping(uint => mapping(address => bool)) requestApprovals;
