@@ -16,10 +16,17 @@ contract CowBase {
     Cow[] public cows;
 
     constructor() {
-        getTraitIndexMapping();
+        _getTraitIndexMapping();
     }
 
-    function getRandomTrait(string memory traitKey) private returns (uint8) {
+    function _hasValidParents(uint256 motherId, uint256 fatherId)
+        private
+        returns (bool)
+    {
+        return motherId != fatherId;
+    }
+
+    function _getRandomTrait(string memory traitKey) private returns (uint8) {
         return
             uint8(
                 uint256(
@@ -36,7 +43,7 @@ contract CowBase {
     }
 
     function createCow() public {
-        uint8[7] memory newTraits = getRandomTraits();
+        uint8[7] memory newTraits = _getRandomTraits();
         Cow memory newCow =
             Cow({
                 index: cows.length,
@@ -49,7 +56,8 @@ contract CowBase {
     }
 
     function breedCow(uint256 motherId, uint256 fatherId) public {
-        uint8[7] memory combinedTraits = getCombinedTraits(motherId, fatherId);
+        require(_hasValidParents(motherId, fatherId));
+        uint8[7] memory combinedTraits = _getCombinedTraits(motherId, fatherId);
         Cow memory newCow =
             Cow({
                 index: cows.length,
@@ -61,13 +69,13 @@ contract CowBase {
         cows.push(newCow);
     }
 
-    function getCombinedTraits(uint256 motherId, uint256 fatherId)
+    function _getCombinedTraits(uint256 motherId, uint256 fatherId)
         private
         returns (uint8[7] memory)
     {
         uint8[7] memory motherTraits = cows[motherId].traits;
         uint8[7] memory fatherTraits = cows[fatherId].traits;
-        uint8[7] memory shuffledTraits = getShuffledTraits();
+        uint8[7] memory shuffledTraits = _getShuffledTraits();
         uint8[7] memory childTraits;
 
         // first 2 traits from mother
@@ -79,13 +87,13 @@ contract CowBase {
         childTraits[shuffledTraits[3]] = fatherTraits[shuffledTraits[3]];
 
         // randomize last 3 traits
-        childTraits[shuffledTraits[4]] = getRandomTrait(
+        childTraits[shuffledTraits[4]] = _getRandomTrait(
             _traitMap[shuffledTraits[4]]
         );
-        childTraits[shuffledTraits[5]] = getRandomTrait(
+        childTraits[shuffledTraits[5]] = _getRandomTrait(
             _traitMap[shuffledTraits[5]]
         );
-        childTraits[shuffledTraits[6]] = getRandomTrait(
+        childTraits[shuffledTraits[6]] = _getRandomTrait(
             _traitMap[shuffledTraits[6]]
         );
 
@@ -97,19 +105,19 @@ contract CowBase {
         return cow.traits;
     }
 
-    function getRandomTraits() private returns (uint8[7] memory) {
+    function _getRandomTraits() private returns (uint8[7] memory) {
         return [
-            getRandomTrait(_traitMap[0]),
-            getRandomTrait(_traitMap[1]),
-            getRandomTrait(_traitMap[2]),
-            getRandomTrait(_traitMap[3]),
-            getRandomTrait(_traitMap[4]),
-            getRandomTrait(_traitMap[5]),
-            getRandomTrait(_traitMap[6])
+            _getRandomTrait(_traitMap[0]),
+            _getRandomTrait(_traitMap[1]),
+            _getRandomTrait(_traitMap[2]),
+            _getRandomTrait(_traitMap[3]),
+            _getRandomTrait(_traitMap[4]),
+            _getRandomTrait(_traitMap[5]),
+            _getRandomTrait(_traitMap[6])
         ];
     }
 
-    function getShuffledTraits() private returns (uint8[7] memory) {
+    function _getShuffledTraits() private returns (uint8[7] memory) {
         uint8[7] memory traitIndexes = [0, 1, 2, 3, 4, 5, 6];
 
         for (uint8 i = 0; i < traitIndexes.length; i++) {
@@ -134,7 +142,7 @@ contract CowBase {
         return traitIndexes;
     }
 
-    function getRandomTraitIndex(uint8 index) private returns (uint8) {
+    function _getRandomTraitIndex(uint8 index) private returns (uint8) {
         return
             uint8(
                 uint256(
@@ -150,7 +158,7 @@ contract CowBase {
             );
     }
 
-    function getTraitIndexMapping() private {
+    function _getTraitIndexMapping() private {
         _traitMap[0] = "baseColor";
         _traitMap[1] = "eyes";
         _traitMap[2] = "eyeColor";
