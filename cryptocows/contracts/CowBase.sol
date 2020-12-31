@@ -7,13 +7,13 @@ contract CowBase {
         uint8[7] traits;
         uint256 motherId;
         uint256 fatherId;
-        uint256 index;
     }
 
     mapping(uint8 => string) private _traitMap;
     uint8 private _traitMapLength = 7;
 
     Cow[] public cows;
+    mapping(uint256 => address) public cowIndexToOwner;
 
     constructor() {
         _getTraitIndexMapping();
@@ -44,29 +44,27 @@ contract CowBase {
 
     function createCow() public {
         uint8[7] memory newTraits = _getRandomTraits();
-        Cow memory newCow =
-            Cow({
-                index: cows.length,
-                motherId: 0,
-                fatherId: 0,
-                traits: newTraits
-            });
+        uint256 cowId = cows.length;
+
+        Cow memory newCow = Cow({motherId: 0, fatherId: 0, traits: newTraits});
 
         cows.push(newCow);
+        cowIndexToOwner[cowId] = msg.sender;
     }
 
     function breedCow(uint256 motherId, uint256 fatherId) public {
         require(_hasValidParents(motherId, fatherId));
         uint8[7] memory combinedTraits = _getCombinedTraits(motherId, fatherId);
+        uint256 cowId = cows.length;
         Cow memory newCow =
             Cow({
-                index: cows.length,
                 motherId: motherId,
                 fatherId: fatherId,
                 traits: combinedTraits
             });
 
         cows.push(newCow);
+        cowIndexToOwner[cowId] = msg.sender;
     }
 
     function _getCombinedTraits(uint256 motherId, uint256 fatherId)
